@@ -5,6 +5,8 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres_password
   server:
+    depends_on:
+      - postgres
     build:
       dockerfile: Dockerfile
       context: .
