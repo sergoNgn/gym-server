@@ -43,6 +43,17 @@ app.get("/clients", async (req, res) => {
   res.send(values.rows);
 });
 
+app.get("/clients/:id", async (req, res) => {
+  const query = {
+    name: "getById",
+    text: "SELECT * FROM clients WHERE id = $1",
+    values: [req.params.id],
+  };
+  const values = await pgClient.query(query);
+
+  res.send(values.rows);
+});
+
 app.post("/clients", async (req, res) => {
   const query = {
     name: "save",
