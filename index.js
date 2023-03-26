@@ -73,7 +73,7 @@ app.put("/clients", async (req, res) => {
   };
   pgClient.query(query);
 
-  res.status(200).send();
+  res.status(200).send(query.rows[0]);
 });
 
 app.delete("/clients/:id", async (req, res) => {
