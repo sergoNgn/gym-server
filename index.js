@@ -71,7 +71,7 @@ app.put("/clients", async (req, res) => {
     text: "UPDATE clients SET data = ($1) WHERE id = $2",
     values: [req.body.data, req.body.id],
   };
-  pgClient.query(query);
+  const saved = pgClient.query(saved.rows[0]);
 
   res.status(200).send(query.rows[0]);
 });
