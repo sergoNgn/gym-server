@@ -51,7 +51,7 @@ app.get("/clients/:id", async (req, res) => {
   };
   const values = await pgClient.query(query);
 
-  res.send(values.rows);
+  res.send(values.rows[0]);
 });
 
 app.post("/clients", async (req, res) => {
