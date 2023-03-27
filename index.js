@@ -1,8 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { Pool } = require("pg");
-const keys = require("./keys");
+const db = require("./db");
 
 const app = express();
 
@@ -10,35 +9,25 @@ app.listen("9000");
 app.use(cors());
 app.use(bodyParser.json());
 
-const pgClient = new Pool({
-  user: keys.pgUser,
-  host: keys.pgHost,
-  database: keys.pgDB,
-  password: keys.pgPass,
-  port: keys.pgPort,
-});
-
-const initPG = async (query) => {
-  try {
-    await pgClient.connect();
-    await pgClient.query(query);
-
-    return true;
-  } catch (err) {
-    console.log(err);
-
-    return false;
-  }
-};
-
-initPG(
-  "CREATE TABLE IF NOT EXISTS clients (id serial, data json, PRIMARY KEY(id))"
-).then((res) => {
-  console.log("postgres is initiated");
-});
-
 app.get("/clients", async (req, res) => {
-  const values = await pgClient.query("SELECT * FROM clients");
+  let baseQuery = "SELECT * FROM clients WHERE 1=1";
+  const searchParams = [];
+  let paramsCount = 1;
+
+  if (req.query.gym) {
+    baseQuery = `${baseQuery} AND data ->> 'gym' = $${paramsCount++}`;
+    searchParams.push(req.query.gym);
+  }
+
+  if (req.query.sex) {
+    baseQuery = `${baseQuery} AND data ->> 'sex' = $${paramsCount}`;
+    searchParams.push(req.query.sex);
+  }
+
+  const values = await db.pgClient.query({
+    text: baseQuery,
+    values: searchParams,
+  });
 
   res.send(values.rows);
 });
@@ -49,7 +38,7 @@ app.get("/clients/:id", async (req, res) => {
     text: "SELECT * FROM clients WHERE id = $1",
     values: [req.params.id],
   };
-  const values = await pgClient.query(query);
+  const values = await db.pgClient.query(query);
 
   res.send(values.rows[0]);
 });
@@ -60,7 +49,7 @@ app.post("/clients", async (req, res) => {
     text: "INSERT INTO clients (data) values ($1) RETURNING id",
     values: [req.body],
   };
-  const saved = await pgClient.query(query);
+  const saved = await db.pgClient.query(query);
 
   res.status(200).send(saved.rows[0]);
 });
@@ -71,7 +60,7 @@ app.put("/clients/:id", async (req, res) => {
     text: "UPDATE clients SET data = ($1) WHERE id = $2",
     values: [req.body.data, req.params.id],
   };
-  const saved = await pgClient.query(query);
+  const saved = await db.pgClient.query(query);
 
   res.status(200).send();
 });
@@ -82,7 +71,7 @@ app.delete("/clients/:id", async (req, res) => {
     text: "DELETE FROM clients WHERE id = $1",
     values: [req.params.id],
   };
-  pgClient.query(query);
+  await db.pgClient.query(query);
 
   res.status(200).send();
 });
