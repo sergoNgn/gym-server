@@ -1,6 +1,8 @@
 const { Pool } = require("pg");
 const keys = require("./keys");
 
+// init a postgress db
+
 const pgClient = new Pool({
   user: keys.pgUser,
   host: keys.pgHost,
