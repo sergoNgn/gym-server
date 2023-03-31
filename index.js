@@ -20,16 +20,24 @@ app.get("/clients", async (req, res) => {
   }
 
   if (req.query.sex) {
-    baseQuery = `${baseQuery} AND data ->> 'sex' = $${paramsCount}`;
+    baseQuery = `${baseQuery} AND data ->> 'sex' = $${paramsCount++}`;
     searchParams.push(req.query.sex);
   }
+
+  baseQuery = baseQuery.concat(
+    ` LIMIT $${paramsCount++} OFFSET $${paramsCount++}`
+  );
+
+  searchParams.push(req.query.limit, req.query.page * req.query.limit);
 
   const values = await db.pgClient.query({
     text: baseQuery,
     values: searchParams,
   });
 
-  res.send(values.rows);
+  console.log(baseQuery);
+
+  res.send({ total: values.rowCount, data: values.rows });
 });
 
 app.get("/clients/:id", async (req, res) => {
