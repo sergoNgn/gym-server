@@ -10,7 +10,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/clients", async (req, res) => {
-  let baseQuery = "SELECT * FROM clients WHERE 1=1";
+  let baseQuery = "SELECT *, count(*) over () FROM clients WHERE 1=1";
   const searchParams = [];
   let paramsCount = 1;
 
@@ -35,9 +35,7 @@ app.get("/clients", async (req, res) => {
     values: searchParams,
   });
 
-  console.log(baseQuery);
-
-  res.send({ total: values.rowCount, data: values.rows });
+  res.send({ total: values.rows[0].count, data: values.rows });
 });
 
 app.get("/clients/:id", async (req, res) => {
