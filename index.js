@@ -30,6 +30,8 @@ app.get("/clients", async (req, res) => {
 
   searchParams.push(req.query.limit, req.query.page * req.query.limit);
 
+  console.log(searchParams);
+
   const values = await db.pgClient.query({
     text: baseQuery,
     values: searchParams,
