@@ -111,7 +111,7 @@ app.post("/exercies", async (req, res) => {
 app.get("/exercies/:id", async (req, res) => {
   const query = {
     name: "getCategories",
-    text: "SELECT * FROM exercies where client_id = $1",
+    text: "SELECT * FROM exercises where client_id = $1",
     values: [req.params.id],
   };
   const values = await db.pgClient.query(query);
