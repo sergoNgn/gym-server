@@ -27,7 +27,27 @@ const initPG = async (query) => {
 initPG(
   "CREATE TABLE IF NOT EXISTS clients (id serial, data json, PRIMARY KEY(id))"
 ).then((res) => {
-  console.log("postgres is initiated");
+  console.log("clients is initiated");
+});
+
+initPG(
+  "CREATE TABLE IF NOT EXISTS categories (id serial, name text unique, PRIMARY KEY(id));"
+).then((res) => {
+  console.log("categories is initiated");
+});
+
+initPG(
+  `insert into categories (name) values ('Ноги'), ('Грудь'), ('Спина'), ('Плечі'), ('Руки'), ('Аеробне')
+    on conflict (name) do update set name = excluded.name;
+  `
+).then((res) => {
+  console.log("categories are created");
+});
+
+initPG(
+  "CREATE TABLE IF NOT EXISTS exercises (id serial, name text, isMen boolean, category_id int references categories(id), PRIMARY KEY(id))"
+).then((res) => {
+  console.log("exercises is initiated");
 });
 
 module.exports = {

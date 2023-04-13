@@ -30,8 +30,6 @@ app.get("/clients", async (req, res) => {
 
   searchParams.push(req.query.limit, req.query.page * req.query.limit);
 
-  console.log(searchParams);
-
   const values = await db.pgClient.query({
     text: baseQuery,
     values: searchParams,
@@ -82,4 +80,14 @@ app.delete("/clients/:id", async (req, res) => {
   await db.pgClient.query(query);
 
   res.status(200).send();
+});
+
+app.get("/categories", async (req, res) => {
+  const query = {
+    name: "getCategories",
+    text: "SELECT * FROM categories",
+  };
+  const values = await db.pgClient.query(query);
+
+  res.send(values.rows);
 });
