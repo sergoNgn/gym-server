@@ -91,3 +91,19 @@ app.get("/categories", async (req, res) => {
 
   res.send(values.rows);
 });
+
+app.post("/exercies", async (req, res) => {
+  const query = {
+    name: "save",
+    text: "INSERT INTO exercises (name, category_id, sex, client_id) values ($1, $2, $3, $4) RETURNING id",
+    values: [
+      req.body.name,
+      req.body.categoryId,
+      req.body.isMen,
+      req.body.clientId,
+    ],
+  };
+  const saved = await db.pgClient.query(query);
+
+  res.status(200).send(saved.rows[0]);
+});
