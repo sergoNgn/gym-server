@@ -107,3 +107,14 @@ app.post("/exercies", async (req, res) => {
 
   res.status(200).send(saved.rows[0]);
 });
+
+app.get("/exercies/:id", async (req, res) => {
+  const query = {
+    name: "getCategories",
+    text: "SELECT * FROM exercies where client_id = $1",
+    values: [req.params.id],
+  };
+  const values = await db.pgClient.query(query);
+
+  res.send(values.rows);
+});
