@@ -108,7 +108,7 @@ app.post("/exercises", async (req, res) => {
   res.status(200).send(saved.rows[0]);
 });
 
-app.get("/exercies/:id", async (req, res) => {
+app.get("/exercises/:id", async (req, res) => {
   const query = {
     name: "getCategories",
     text: "SELECT * FROM exercises where client_id = $1",
