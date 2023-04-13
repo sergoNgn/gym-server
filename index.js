@@ -99,7 +99,7 @@ app.post("/exercies", async (req, res) => {
     values: [
       req.body.name,
       req.body.categoryId,
-      req.body.isMen,
+      req.body.sex,
       req.body.clientId,
     ],
   };
