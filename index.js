@@ -110,11 +110,19 @@ app.post("/exercises", async (req, res) => {
 
 app.get("/exercises/:id", async (req, res) => {
   const query = {
-    name: "getCategories",
+    name: `getCategories${req.params.id}`,
     text: "SELECT * FROM exercises where client_id = $1",
     values: [req.params.id],
   };
   const values = await db.pgClient.query(query);
 
-  res.send(values.rows);
+  res.send(
+    values.rows.map((r) => {
+      return {
+        ...r,
+        categoryId: r.category_id,
+        clientId: r.client_id,
+      };
+    })
+  );
 });
