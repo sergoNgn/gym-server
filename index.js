@@ -35,7 +35,7 @@ app.get("/clients", async (req, res) => {
     values: searchParams,
   });
 
-  res.send({ total: values.rows[0].count, data: values.rows });
+  res.send({ total: values.rows[0]?.count, data: values.rows });
 });
 
 app.get("/clients/:id", async (req, res) => {
@@ -77,6 +77,12 @@ app.delete("/clients/:id", async (req, res) => {
     text: "DELETE FROM clients WHERE id = $1",
     values: [req.params.id],
   };
+  const exercisesQuery = {
+    name: "deleteExercises",
+    text: "DELETE FROM exercises WHERE client_id = $1",
+    values: [req.params.id],
+  };
+  await db.pgClient.query(exercisesQuery);
   await db.pgClient.query(query);
 
   res.status(200).send();

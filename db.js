@@ -45,7 +45,7 @@ initPG(
 });
 
 initPG(
-  "CREATE TABLE IF NOT EXISTS exercises (id serial, name text, client_id int references clients(id), sex text, category_id int references categories(id), PRIMARY KEY(id))"
+  "CREATE TABLE IF NOT EXISTS exercises (id serial, name text, client_id int references clients(id), sex text, category_id int references categories(id) ON DELETE CASCADE, PRIMARY KEY(id))"
 ).then((res) => {
   console.log("exercises is initiated");
 });
