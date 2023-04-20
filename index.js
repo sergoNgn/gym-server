@@ -116,7 +116,7 @@ app.post("/exercises", async (req, res) => {
 
 app.get("/exercises/:id", async (req, res) => {
   const query = {
-    name: `getCategories${req.params.id}`,
+    name: `getExercises${req.params.id}`,
     text: "SELECT * FROM exercises where client_id = $1",
     values: [req.params.id],
   };
@@ -131,4 +131,15 @@ app.get("/exercises/:id", async (req, res) => {
       };
     })
   );
+});
+
+app.delete("/exercises/:id", async (req, res) => {
+  const query = {
+    name: `deleteExercises${req.params.id}`,
+    text: "DELETE FROM exercises where id = $1",
+    values: [req.params.id],
+  };
+  const values = await db.pgClient.query(query);
+
+  res.status(200).send();
 });
