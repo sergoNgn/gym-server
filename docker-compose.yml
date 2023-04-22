@@ -13,8 +13,8 @@ services:
       dockerfile: Dockerfile
       context: .
     volumes:
-      - /app/node_modules
       - ./:/app
+      # - /app/node_modules
     environment:
       - PG_HOST=postgres
       - PG_PORT=5432
