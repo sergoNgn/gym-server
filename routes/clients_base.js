@@ -17,18 +17,44 @@ const clientBaseRoutes = (db) => {
   });
 
   router.post("/:clientId", async (req, resp) => {
-    const exerciseValues = req.body.exercises.map((e) => {
-      return `(${req.params.clientId}, ${e.exerciseId}, '${JSON.stringify(
-        e.data
-      )}')`;
-    });
+    const queryExercises = {
+      text: "SELECT * from exercises ex WHERE ex.sex = (SELECT sex from clients c WHERE c.id = $1);",
+      values: [req.params.clientId],
+    };
 
     try {
+      const allExercises = await db.pgClient.query(queryExercises);
+      data = {
+        1: "",
+        2: "",
+        3: "",
+        4: "",
+        5: "",
+        6: "",
+        7: "",
+        8: "",
+        9: "",
+        10: "",
+        11: "",
+        12: "",
+        13: "",
+        14: "",
+        15: "",
+      };
+
+      console.log(data);
+
+      const exerciseValues = allExercises.rows.map((e) => {
+        return `(${req.params.clientId}, ${e.id}, '${JSON.stringify(data)}')`;
+      });
+
       await db.pgClient.query(
-        `INSERT into clients_base VALUES ${exerciseValues}`
+        `INSERT into clients_base (client_id, exercise_id, data) VALUES ${exerciseValues}`
       );
+
       resp.status(200).send();
     } catch (err) {
+      console.log(err);
       resp.status(500).send("failed to save client base");
     }
   });
