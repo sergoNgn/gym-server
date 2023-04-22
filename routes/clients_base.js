@@ -24,7 +24,7 @@ const clientBaseRoutes = (db) => {
 
     try {
       const allExercises = await db.pgClient.query(queryExercises);
-      console.log(allExercises.rows);
+
       data = {
         1: "",
         2: "",
@@ -45,7 +45,7 @@ const clientBaseRoutes = (db) => {
 
       console.log(data);
 
-      const exerciseValues = allExercises.rows.map((e) => {
+      const exerciseValues = allExercises.rows?.map((e) => {
         return `(${req.params.clientId}, ${e.id}, '${JSON.stringify(data)}')`;
       });
 
