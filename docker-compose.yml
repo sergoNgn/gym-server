@@ -14,7 +14,7 @@ services:
       context: .
     volumes:
       - ./:/app
-      # - /app/node_modules
+      - /app/node_modules
     environment:
       - PG_HOST=postgres
       - PG_PORT=5432

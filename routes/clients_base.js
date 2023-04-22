@@ -18,7 +18,7 @@ const clientBaseRoutes = (db) => {
 
   router.post("/:clientId", async (req, resp) => {
     const queryExercises = {
-      text: "SELECT * from exercises ex WHERE ex.sex = (SELECT sex from clients c WHERE c.id = $1);",
+      text: "SELECT * from exercises ex WHERE ex.sex = (SELECT data::json->>sex from clients c WHERE c.id = $1)",
       values: [req.params.clientId],
     };
 
