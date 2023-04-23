@@ -59,7 +59,7 @@ const updateBase = async (req, resp) => {
     const exercises = req.body.exercises;
 
     const exerciseValues = exercises.map((e) => {
-      return `(${base.rows[0].id}, ${e.exerciseId}, '${JSON.stringify(
+      return `(${base.rows[0].id}, ${e.exercise_id}, '${JSON.stringify(
         e.data
       )}')`;
     });
