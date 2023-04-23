@@ -1,8 +1,8 @@
-module.exports = function (app, db) {
-  const clients = require("./clients")(db);
-  const exercises = require("./exercises")(db);
-  const categories = require("./categories")(db);
-  const clientsBase = require("./clients_base")(db);
+module.exports = function (app) {
+  const clients = require("./clients");
+  const exercises = require("./exercises");
+  const categories = require("./categories");
+  const clientsBase = require("./clients_base");
 
   app.use("/clients", clients);
   app.use("/exercises", exercises);

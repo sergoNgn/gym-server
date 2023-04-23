@@ -1,18 +1,7 @@
-const categoriesRouter = (db) => {
-  const { Router } = require("express");
-  const router = Router();
+const { getCategories } = require("../controllers/categories_controller");
+const { Router } = require("express");
+const router = Router();
 
-  router.get("/", async (req, res) => {
-    const query = {
-      name: "getCategories",
-      text: "SELECT * FROM categories",
-    };
-    const values = await db.pgClient.query(query);
+router.get("/", getCategories);
 
-    res.send(values.rows);
-  });
-
-  return router;
-};
-
-module.exports = categoriesRouter;
+module.exports = router;

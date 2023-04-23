@@ -3,7 +3,7 @@ const keys = require("../keys");
 const {
   create_categories,
   create_client_base,
-  create_client_clients_base,
+  create_client_base_exercises,
   create_clients,
   create_exercises,
   init_categories,
@@ -11,18 +11,25 @@ const {
 
 // init a postgress db
 
-const pgClient = new Pool({
-  user: keys.pgUser,
-  host: keys.pgHost,
-  database: keys.pgDB,
-  password: keys.pgPass,
-  port: keys.pgPort,
-});
+let pgClient;
+
+const getDBConnection = () => {
+  if (!pgClient) {
+    pgClient = new Pool({
+      user: keys.pgUser,
+      host: keys.pgHost,
+      database: keys.pgDB,
+      password: keys.pgPass,
+      port: keys.pgPort,
+    });
+  }
+  return pgClient;
+};
 
 const execute = async (query) => {
   try {
-    await pgClient.connect();
-    await pgClient.query(query);
+    await getDBConnection().connect();
+    await getDBConnection().query(query);
 
     return true;
   } catch (err) {
@@ -37,10 +44,11 @@ execute(create_clients)
   .then(() => execute(init_categories))
   .then(() => execute(create_exercises))
   .then(() => execute(create_client_base))
+  .then(() => execute(create_client_base_exercises))
   .then(() => {
     console.log("db is initiated");
   });
 
 module.exports = {
-  pgClient: pgClient,
+  pgClient: getDBConnection(),
 };
