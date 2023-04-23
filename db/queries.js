@@ -11,7 +11,7 @@ const create_exercises =
   "CREATE TABLE IF NOT EXISTS exercises (id serial, name text, sex text, category_id int references categories(id), PRIMARY KEY(id))";
 
 const create_client_base =
-  "CREATE TABLE IF NOT EXISTS clients_base (id serial, client_id int references clients(id), PRIMARY KEY(id))";
+  "CREATE TABLE IF NOT EXISTS clients_base (id serial, client_id int references clients(id) UNIQUE, PRIMARY KEY(id))";
 
 const create_client_base_exercises =
   "CREATE TABLE IF NOT EXISTS clients_base_exercises (base_id int references clients_base(id), exercise_id int references exercises(id), data json, PRIMARY KEY(base_id, exercise_id))";

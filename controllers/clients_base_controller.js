@@ -19,7 +19,7 @@ const getByClientId = async (req, resp) => {
 const saveNewBase = async (req, resp) => {
   try {
     const createBaseQuery = {
-      text: "INSERT into clients_base (client_id) values ($1) RETURNING id",
+      text: "INSERT into clients_base (client_id) values ($1) on conflict (client_id) do update set client_id = excluded.client_id RETURNING id",
       values: [req.params.clientId],
     };
 
@@ -50,11 +50,24 @@ const saveNewBase = async (req, resp) => {
 
 const updateBase = async (req, resp) => {
   try {
-    const query = {
-      text: "UPDATE clients_base_exercises set data = ($1) WHERE base_id = $2 AND exercise_id = $3",
-      values: [req.body.data, req.params.baseId, req.body.exerciseId],
+    const getBaseQuery = {
+      text: "SELECT id from clients_base WHERE client_id = $1",
+      values: [req.params.clientId],
     };
-    await db.pgClient.query(query);
+
+    const base = await db.pgClient.query(getBaseQuery);
+    const exercises = req.body.exercises;
+
+    const exerciseValues = exercises.map((e) => {
+      return `(${base.rows[0].id}, ${e.exerciseId}, '${JSON.stringify(
+        e.data
+      )}')`;
+    });
+
+    await db.pgClient.query(
+      `INSERT into clients_base_exercises (base_id, exercise_id, data) VALUES ${exerciseValues} on conflict (base_id, exercise_id) do update set data = excluded.data`
+    );
+
     resp.status(200).send();
   } catch (err) {
     resp.status(500).send("failed to update client base");
